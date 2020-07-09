@@ -1,5 +1,6 @@
 package game
 
+import game.drawable.Keyboard
 import game.screen.Drawable
 import game.screen.Screen
 import java.awt.*
@@ -35,33 +36,19 @@ class Game {
             override val permanency = true
 
             override fun draw(graphics: Graphics2D) {
+               graphics.color = Color(17, 25, 45)
                graphics.fillRect(0, 0, drawRange.width, drawRange.height)
-            }
-
-         }
-
-      val fpsCounter =
-         object : Drawable {
-
-            var counter = 0
-
-            override val drawRange: Rectangle = Rectangle(5, 105, 300, 300)
-            override val permanency = false
-
-            override fun draw(graphics: Graphics2D) {
-               graphics.color = Color.BLACK
-               graphics.font = Font("Fira Code Retina", 0, 64)
-               graphics.drawString(counter.toString(), 100, 100)
-               counter++
             }
 
          }
 
       Screen.registerTask(screenEraser)
 
+      val keyBoard = Keyboard()
+
       while (true) {
          withFPScare {
-            Screen.registerTask(fpsCounter)
+            Screen.registerTask(keyBoard)
             Screen.resolveTask()
          }
       }
