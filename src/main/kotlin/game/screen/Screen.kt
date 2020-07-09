@@ -1,6 +1,7 @@
 package game.screen
 
 import java.awt.*
+import java.awt.event.KeyListener
 import java.awt.image.BufferedImage
 import javax.swing.JFrame
 
@@ -30,6 +31,10 @@ object Screen {
    fun show() {
       frame.isVisible = true
       graphics = frame.graphics
+   }
+
+   fun addKeyListener(listener: KeyListener) {
+      frame.addKeyListener(listener)
    }
 
    fun registerTask(task: Drawable) {

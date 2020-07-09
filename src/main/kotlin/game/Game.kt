@@ -4,10 +4,14 @@ import game.drawable.Keyboard
 import game.screen.Drawable
 import game.screen.Screen
 import java.awt.*
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 
-class Game {
+class Game : KeyAdapter() {
 
    private val idealFPSWaitTime = (1000 shl 16) / 60
+
+   private val keyboard = Keyboard()
 
    private fun withFPScare(frameOperation: () -> Unit) {
 
@@ -30,6 +34,8 @@ class Game {
       Screen.show()
       Screen.DEBUG = true
 
+      Screen.addKeyListener(this)
+
       val screenEraser =
          object : Drawable {
             override val drawRange = Rectangle(0, 0, Screen.WINDOW_SIZE.width, Screen.WINDOW_SIZE.height)
@@ -44,15 +50,21 @@ class Game {
 
       Screen.registerTask(screenEraser)
 
-      val keyBoard = Keyboard()
-
       while (true) {
          withFPScare {
-            Screen.registerTask(keyBoard)
+            Screen.registerTask(keyboard)
             Screen.resolveTask()
          }
       }
 
+   }
+
+   override fun keyPressed(e: KeyEvent?) {
+      keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
+   }
+
+   override fun keyReleased(e: KeyEvent?) {
+      keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = false
    }
 
 }

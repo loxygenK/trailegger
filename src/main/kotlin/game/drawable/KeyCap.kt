@@ -9,19 +9,17 @@ class KeyCap(
    private val rectangle: Rectangle
 ) {
 
-   fun draw(
-      graphics: Graphics2D,
-      background: Color = Color(0, 0, 0, 0),
-      borderColor: Color = Color.GRAY,
-      textColor: Color = Color.GRAY
-   ) {
-      graphics.color = background
-      graphics.fillRect(0, 0, rectangle.width, rectangle.height)
+   var highlighting = false
 
-      graphics.color = borderColor
+   fun draw(
+      graphics: Graphics2D
+   ) {
+      graphics.color = if(highlighting) Color(36, 74, 168) else Color(0, 0, 0, 0)
+      graphics.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
+
+      graphics.color = Color.GRAY
       graphics.drawRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
-      graphics.color = textColor
       graphics.drawString(
          caption.toString(),
          rectangle.x + rectangle.width / 2 - 7, rectangle.y + rectangle.height / 2 + 9

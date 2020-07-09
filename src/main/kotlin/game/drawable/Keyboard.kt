@@ -50,9 +50,11 @@ class Keyboard : Drawable {
       }
    }
 
-   fun getKeyCap(char: Char): KeyCap {
+   fun getKeyCap(char: Char): KeyCap? {
 
       val y = keyboardCaptions.indexOfFirst { it.contains(char) }
+      if(y == -1) return null
+
       val x = keyboardCaptions[y].indexOfFirst { it == char }
 
       return keyCaps[y][x]
