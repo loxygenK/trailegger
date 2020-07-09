@@ -49,8 +49,8 @@ object Screen {
          val partialGraphics : Graphics2D = image.createGraphics()
          // partialGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
+         if (DEBUG) partialGraphics.drawRect(0, 0, range.width - 1, range.height - 1)
          it.draw(partialGraphics)
-         if (DEBUG) graphics.drawRect(range.x, range.y, range.width, range.height)
 
       }
       graphics.drawImage(windowImage, 0, 0,null)
