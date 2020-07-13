@@ -2,23 +2,25 @@ package game.drawable
 
 import game.screen.Drawable
 import game.screen.Screen.expandWidthOfScreen
-import game.screen.Screen.toBottomOfScreen
+import game.screen.Screen.toEdgeOfScreen
+import game.screen.ScreenEdge
 import java.awt.*
 
-class Keyboard : Drawable {
+object Keyboard : Drawable {
 
    private val keyboardCaptions = listOf(
       "1234567890-^\\", "qwertyuiop@[", "asdfghjkl;:]", "zxcvbnm,./\\"
    )
-   private val keyCaps: List<List<KeyCap>>
-   private val keySize = 50
-   private val keyMargin = 15
+   private val keyCaps: List<KeyCap>
+   private const val keySize = 50
+   private const val keyMargin = 15
 
-   override val drawRange = Rectangle(0, (keySize + keyMargin) * 4).toBottomOfScreen().expandWidthOfScreen()
+   override val drawRange =
+      Rectangle(0, (keySize + keyMargin) * 4).toEdgeOfScreen(ScreenEdge.DOWN).expandWidthOfScreen()
    override val permanency: Boolean = false
 
    init {
-      val location = mutableListOf<MutableList<KeyCap>>()
+      val pendingKeyCaps = mutableListOf<KeyCap>()
       val keyDimension = keySize + keyMargin
 
       for(y in keyboardCaptions.indices) {
@@ -35,30 +37,21 @@ class Keyboard : Drawable {
             )
          }
 
-         location.add(partialLocation)
+         pendingKeyCaps.addAll(partialLocation)
       }
-      keyCaps = location
+      keyCaps = pendingKeyCaps
    }
 
    override fun draw(graphics: Graphics2D) {
       graphics.color = Color.GRAY
       graphics.font = Font("Fira Code Retina", 0, 24)
       keyCaps.forEach {
-         it.forEach {  key ->
-            key.draw(graphics)
-         }
+         it.draw(graphics)
       }
    }
 
    fun getKeyCap(char: Char): KeyCap? {
-
-      val y = keyboardCaptions.indexOfFirst { it.contains(char) }
-      if(y == -1) return null
-
-      val x = keyboardCaptions[y].indexOfFirst { it == char }
-
-      return keyCaps[y][x]
-
+      return keyCaps.find { it.caption == char }
    }
 
 }

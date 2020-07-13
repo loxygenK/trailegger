@@ -5,8 +5,8 @@ import java.awt.Graphics2D
 import java.awt.Rectangle
 
 class KeyCap(
-   private val caption: Char,
-   private val rectangle: Rectangle
+   val caption: Char,
+   val rectangle: Rectangle
 ) {
 
    var highlighting = false

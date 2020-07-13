@@ -1,6 +1,7 @@
 package game
 
 import game.drawable.Keyboard
+import game.score.ScoreParser
 import game.screen.Drawable
 import game.screen.Screen
 import java.awt.*
@@ -9,26 +10,27 @@ import java.awt.event.KeyEvent
 
 class Game : KeyAdapter() {
 
-   private val idealFPSWaitTime = (1000 shl 16) / 60
+   companion object {
+      private const val idealFPSWaitTime = (999 shl 16) / 60
+      private fun withFPScare(frameOperation: () -> Unit) {
 
-   private val keyboard = Keyboard()
+         val startTime = System.currentTimeMillis() shl 16
+         frameOperation()
+         val endTime = System.currentTimeMillis() shl 16
 
-   private fun withFPScare(frameOperation: () -> Unit) {
+         val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
 
-      val startTime = System.currentTimeMillis() shl 16
-      frameOperation()
-      val endTime = System.currentTimeMillis() shl 16
+         if(sleepTime < 0) {
+            println("[!] ${-sleepTime} ms over!")
+            return
+         }
 
-      val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
+         Thread.sleep(sleepTime)
 
-      if(sleepTime < 0) {
-         println("[!] ${-sleepTime} ms over!")
-         return
       }
-
-      Thread.sleep(sleepTime)
-
    }
+
+   private val score = ScoreParser.parse()
 
    fun start() {
       Screen.show()
@@ -49,22 +51,35 @@ class Game : KeyAdapter() {
          }
 
       Screen.registerTask(screenEraser)
+      Screen.registerTask(score.songInfo.createSongInfoDrawer())
 
+      val start = System.currentTimeMillis()
       while (true) {
+         val currentTime = System.currentTimeMillis() - start
          withFPScare {
-            Screen.registerTask(keyboard)
+
+            Screen.registerTask(Keyboard)
+
+            score.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
+               it.createJudgeBorder(currentTime)?.let { task -> Screen.registerTask(task) }
+            }
+
             Screen.resolveTask()
+
          }
       }
 
    }
 
    override fun keyPressed(e: KeyEvent?) {
-      keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
+      Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
    }
 
    override fun keyReleased(e: KeyEvent?) {
-      keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = false
+      Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = false
    }
+}
 
+fun Long.relativeRange(start: Long, end: Long): LongRange{
+   return (this + start) until (this + end)
 }
