@@ -14,7 +14,18 @@ import java.awt.event.KeyEvent
 
 class Game : KeyAdapter() {
 
-   private val score = SheetMusicParser.parse()
+   private val score = SheetMusicParser.parse("""
+      ---SongInfo
+      name: とても良いテスト用の譜面
+      author: An author of the very nice score for test
+      bpm: 120
+      offset: 3
+      ---
+      
+      ---Music
+      wwww|wwww|wwww|wwww
+      ---
+   """.trimIndent().split("\n"))
    private val point = Score()
 
    private var currentTime = 0L
