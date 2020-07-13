@@ -1,12 +1,7 @@
 package game.score
 
+// TODO: 名前をどうにかする
 data class Score (
-   val notes: List<Note>,
+   val notes: NotesGetter,
    val songInfo: SongInfo
-) {
-
-   fun getNotesByTimeRange(range: LongRange): List<Note> {
-      return notes.filter { range.contains(it.timestamp) }
-   }
-
-}
+)
