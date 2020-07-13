@@ -35,12 +35,12 @@ class Game(
 
       val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
 
-      println(sleepTime)
-
       if(sleepTime < 0) {
          println("[!] ${-sleepTime} ms over!")
          return
       }
+
+      Thread.sleep(sleepTime)
 
    }
 
