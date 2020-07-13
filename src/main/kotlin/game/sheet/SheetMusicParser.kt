@@ -84,10 +84,10 @@ object SheetMusicParser {
                throw InvalidSheetMusicException(index, line, "There is/are not initialized property(ies)!")
             }
 
-            val bars = line.split("|")
+            val bars = line.split("|").filter { it != "" }
             val parsedNotes = bars.map { barContent ->
                barCount++
-               val timePerNote = 60 / bpm / (barContent.length / 4) * 1000
+               val timePerNote = 60 / bpm / (barContent.length / 4.0) * 1000
                barContent.mapIndexed { idx, c ->
                   if(!validChars.contains(c.toLowerCase())) throw InvalidSheetMusicException(index, line, "Invalid character found! ($c)")
                   if(c != ' ') Note(c.toLowerCase(), (offset + barCount * timePerBar + idx * timePerNote).toLong()) else null

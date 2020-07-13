@@ -12,7 +12,7 @@ class JudgeResultDrawer(
    private val resultLevel: JudgeResultLevel,
    diffTime: Long
 ) : Drawable {
-   val MAXIMUM_VISIBLE_TIME = 500
+   val MAXIMUM_VISIBLE_TIME = 800f
 
    private val drawProgressRate: Float = diffTime.toFloat() / MAXIMUM_VISIBLE_TIME
 
@@ -24,9 +24,15 @@ class JudgeResultDrawer(
          Color(160, 160, 200, (255 * (1 - drawProgressRate)).toInt())
       graphics.font = Font("Fira Code Retina", 0, 72)
       graphics.drawString(
-         resultLevel.toString(),
-         (drawRange.width - graphics.fontMetrics.stringWidth(resultLevel.toString())) / 2,
-         ((72 + 50) - 25 * drawProgressRate).toInt()
+         resultLevel.text,
+         (drawRange.width - graphics.fontMetrics.stringWidth(resultLevel.text)) / 2,
+         (122 - 25 * drawProgressRate).toInt()
+      )
+      graphics.font = Font("Fira Code Retina", 0, 28)
+      graphics.drawString(
+         resultLevel.diffText,
+         (drawRange.width - graphics.fontMetrics.stringWidth(resultLevel.diffText)) / 2,
+         (150 - 25 * drawProgressRate).toInt()
       )
    }
 

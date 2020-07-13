@@ -11,11 +11,11 @@ import java.awt.Rectangle
 import kotlin.math.abs
 
 class Note(
-   char: Char,
+   val char: Char,
    val timing: Long
 ) {
 
-   private val MAXIMUM_VISIBLE_TIME = 800.0f
+   private val MAXIMUM_VISIBLE_TIME = 500.0f
 
    var judged = false
       private set

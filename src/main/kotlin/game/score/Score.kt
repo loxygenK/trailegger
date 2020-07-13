@@ -26,12 +26,7 @@ class Score {
 
    fun updatePoint(judgeResultLevel: JudgeResultLevel) {
 
-      if(judgeResultLevel == JudgeResultLevel.NotJudged) {
-         println("Event was dispatched, but wasn't judged. Maybe too far to judge.")
-         return
-      }
-      println("Judged! result was $judgeResultLevel.")
-
+      if(judgeResultLevel == JudgeResultLevel.NotJudged) return
       point += JudgeSettings.points[judgeResultLevel]!!
 
       if(judgeResultLevel == JudgeResultLevel.Unobserved) {

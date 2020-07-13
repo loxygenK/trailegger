@@ -49,7 +49,8 @@ object Screen {
 
       taskQueue.map {
          val range = it.drawRange
-         val image = windowImage.getSubimage(range.x, range.y, range.width + 1, range.height + 1)
+         val image = windowImage.getSubimage(
+            range.x, range.y, range.width + 1, range.height + 1)
 
          val partialGraphics: Graphics2D = image.createGraphics()
          partialGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
