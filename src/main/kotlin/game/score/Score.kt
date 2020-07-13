@@ -1,8 +1,8 @@
 package game.score
 
 import game.drawable.ScoreDrawer
-import game.system.JudgeResultLevel
-import game.system.JudgeSettings
+import game.judge.JudgeResultLevel
+import game.judge.JudgeSettings
 
 class Score {
 

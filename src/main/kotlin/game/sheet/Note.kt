@@ -2,9 +2,10 @@ package game.sheet
 
 import game.drawable.Keyboard
 import game.drawable.NoteBorder
+import game.judge.JudgeResult
 import game.screen.Drawable
-import game.system.JudgeResultLevel
-import game.system.JudgeSettings
+import game.judge.JudgeResultLevel
+import game.judge.JudgeSettings
 import game.utils.toGlobalLocation
 import java.awt.Rectangle
 import kotlin.math.abs
@@ -21,7 +22,7 @@ class Note(
 
    val baseRange: Rectangle = Keyboard.getKeyCap(char)!!.rectangle.toGlobalLocation(Keyboard.drawRange)
 
-   fun judge(songTimestamp: Long): JudgeResultLevel {
+   fun judge(songTimestamp: Long): JudgeResult {
 
       if(judged) throw IllegalStateException("This note is already judged! Check class Score.")
 
@@ -31,16 +32,19 @@ class Note(
       if(abs(diffTime) > JudgeSettings.JUDGE_TARGET_TIME) {
          // まだタイミングに達していればNotJudged、もう過ぎてたらそれは終わりです
          return if(diffTime > 0) {
-            JudgeResultLevel.NotJudged
+            JudgeResult(JudgeResultLevel.NotJudged, songTimestamp)
          } else {
             judged = true
-            JudgeResultLevel.Unobserved
+            JudgeResult(JudgeResultLevel.Unobserved, songTimestamp)
          }
       }
 
       judged = true
-      return JudgeSettings.judgeBorder.entries.find { it.value.contains(diffTime) }?.key
+
+      val judgeResultLevel = JudgeSettings.judgeBorder.entries.find { it.value.contains(diffTime) }?.key
          ?: error("Invalid difftime($diffTime ms)! Maybe JUDGE_TARGET_TIME(${JudgeSettings.JUDGE_TARGET_TIME} ms) is invalid.")
+
+      return JudgeResult(judgeResultLevel, songTimestamp)
 
    }
 

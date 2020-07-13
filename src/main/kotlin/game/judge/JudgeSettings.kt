@@ -1,4 +1,4 @@
-package game.system
+package game.judge
 
 object JudgeSettings {
 

@@ -1,6 +1,6 @@
 package game.sheet
 
-import game.system.JudgeSettings
+import game.judge.JudgeSettings
 import kotlin.math.abs
 
 class NotesGetter(

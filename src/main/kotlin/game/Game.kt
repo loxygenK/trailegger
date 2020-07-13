@@ -1,6 +1,8 @@
 package game
 
+import game.drawable.JudgeResultDrawer
 import game.drawable.Keyboard
+import game.judge.JudgeResult
 import game.score.Score
 import game.sheet.SheetMusicParser
 import game.screen.Drawable
@@ -34,13 +36,7 @@ class Game : KeyAdapter() {
 
       Thread.sleep(sleepTime)
 
-      }
    }
-
-   private val score = SheetMusicParser.parse()
-   private val point = Score()
-
-   private var currentTime = 0L
 
    fun start() {
       Screen.show()
@@ -68,9 +64,13 @@ class Game : KeyAdapter() {
          currentTime = System.currentTimeMillis() - start
          withFPScare {
 
+            // --- フレームごとの処理
+
             score.notes.getLostNotes(currentTime).map {
-               point.updatePoint(it.judge(currentTime))
+               point.updatePoint(it.judge(currentTime).level)
             }
+
+            // --- 描画処理
 
             Screen.registerTask(Keyboard)
 
@@ -79,6 +79,7 @@ class Game : KeyAdapter() {
             }
 
             Screen.registerTask(point.createPointDrawer())
+            Screen.registerTask(JudgeResultDrawer())
 
             Screen.resolveTask()
 
@@ -90,7 +91,7 @@ class Game : KeyAdapter() {
    override fun keyPressed(e: KeyEvent?) {
 
       Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
-      point.updatePoint(score.notes.getNearestNote(currentTime).judge(currentTime))
+      point.updatePoint(score.notes.getNearestNote(currentTime).judge(currentTime).level)
 
    }
 
