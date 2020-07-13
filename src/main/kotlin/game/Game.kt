@@ -1,34 +1,23 @@
 package game
 
-import game.drawable.JudgeResultDrawer
 import game.drawable.Keyboard
 import game.judge.JudgeResult
 import game.judge.JudgeResultLevel
 import game.score.Score
-import game.sheet.SheetMusicParser
 import game.screen.Drawable
 import game.screen.Screen
+import game.sheet.SheetMusic
 import java.awt.*
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 
-class Game : KeyAdapter() {
+class Game(
+   private val sheetMusic: SheetMusic
+) : KeyAdapter() {
 
-   private val score = SheetMusicParser.parse("""
-      ---SongInfo
-      name: とても良いテスト用の譜面
-      author: An author of the very nice score for test
-      bpm: 120
-      offset: 3
-      ---
-      
-      ---Music
-      wwww|wwww|wwww|wwww
-      ---
-   """.trimIndent().split("\n"))
    private val point = Score()
+   private val sound = Sound(sheetMusic.soundFilePath)
 
-   private var currentTime = 0L
    private var previousJudgeResult: JudgeResult? = null
 
    private val idealFPSWaitTime = (999 shl 16) / 60
@@ -68,16 +57,16 @@ class Game : KeyAdapter() {
          }
 
       Screen.registerTask(screenEraser)
-      Screen.registerTask(score.songInfo.createSongInfoDrawer())
+      Screen.registerTask(sheetMusic.songInfo.createSongInfoDrawer())
 
-      val start = System.currentTimeMillis()
+      sound.play()
       while (true) {
-         currentTime = System.currentTimeMillis() - start
+         val currentTime = sound.getCurrentPosition().toLong()
          withFPScare {
 
             // --- フレームごとの処理
 
-            score.notes.getLostNotes(currentTime).map {
+            sheetMusic.notes.getLostNotes(currentTime).map {
                val judgeResult = it.judge(currentTime)
                previousJudgeResult = judgeResult
                point.updatePoint(judgeResult.level)
@@ -91,7 +80,7 @@ class Game : KeyAdapter() {
 
             Screen.registerTask(Keyboard)
 
-            score.notes.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
+            sheetMusic.notes.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
                it.createJudgeBorder(currentTime)?.let { task -> Screen.registerTask(task) }
             }
 
@@ -106,8 +95,10 @@ class Game : KeyAdapter() {
 
    override fun keyPressed(e: KeyEvent?) {
 
+      val currentTime = sound.getCurrentPosition().toLong()
+
       Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
-      val judgeResult = score.notes.getNearestNote(currentTime).judge(currentTime)
+      val judgeResult = sheetMusic.notes.getNearestNote(currentTime).judge(currentTime)
 
       if(judgeResult.level == JudgeResultLevel.NotJudged) return
       previousJudgeResult = judgeResult

@@ -1,5 +1,7 @@
 package game.sheet
 
+import java.io.File
+
 object SheetMusicParser {
 
    class InvalidSheetMusicException(
@@ -15,12 +17,15 @@ object SheetMusicParser {
    }
 
    // TODO: 実際にファイルから読み込ませる
-   fun parse(lists: List<String>): SheetMusic {
+   fun parse(sheetMusicFile: File): SheetMusic {
+
+      val lines = sheetMusicFile.readLines()
 
       var name = ""
       var author = ""
       var bpm = 0.0f
       var offset = 0.0f
+      var soundFileName = ""
 
       var timePerNote = 0f
       var timePerBar = 0f
@@ -29,11 +34,12 @@ object SheetMusicParser {
 
       var barCount = -1
       var parsing = Parsing.NOTHING
-      for (rawLine in lists.withIndex()) {
+      for (rawLine in lines.withIndex()) {
 
          val index = rawLine.index
          val line = rawLine.value.trim()
          if(line.isEmpty()) continue
+         if(line.startsWith("#")) continue
 
          if(line.startsWith("---")) {
             if(parsing != Parsing.NOTHING) {
@@ -57,6 +63,7 @@ object SheetMusicParser {
             when(key) {
                "name" -> name = value
                "author" -> author = value
+               "music" -> soundFileName = value
                "offset" -> {
                   val parsedOffset = value.toFloatOrNull() ?: throw InvalidSheetMusicException(index, line, "Offset must be number!")
                   offset = parsedOffset * 1000
@@ -89,8 +96,14 @@ object SheetMusicParser {
 
       }
 
+      val musicFilePath = File(sheetMusicFile.parentFile, soundFileName)
+      if(!musicFilePath.isFile) {
+         throw InvalidSheetMusicException(0, "(Runtime Error)", "Music file not found!")
+      }
+
       return SheetMusic(
          NotesGetter(notes),
+         musicFilePath.toPath(),
          SongInfo(name, author, bpm)
       )
    }
