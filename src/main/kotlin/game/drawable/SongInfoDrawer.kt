@@ -1,6 +1,7 @@
 package game.drawable
 
 import game.screen.Drawable
+import game.screen.Screen.expandWidthOfScreen
 import game.screen.Screen.toEdgeOfScreen
 import game.screen.ScreenEdge
 import java.awt.Color
@@ -14,7 +15,7 @@ class SongInfoDrawer(
 ) : Drawable {
 
    override val drawRange: Rectangle =
-      Rectangle(0, 0, 400, 75).toEdgeOfScreen(ScreenEdge.TOP, 5).toEdgeOfScreen(ScreenEdge.RIGHT, 15)
+      Rectangle(0, 0, 0, 75).toEdgeOfScreen(ScreenEdge.TOP, 5).expandWidthOfScreen(15)
    override val permanency: Boolean = true
 
    override fun draw(graphics: Graphics2D) {
