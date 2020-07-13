@@ -42,8 +42,6 @@ class Game(
          return
       }
 
-      Thread.sleep(sleepTime)
-
    }
 
    fun start() {
