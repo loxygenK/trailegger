@@ -62,7 +62,6 @@ class Game(
       sound.play()
       while (true) {
          val currentTime = sound.getCurrentPosition().toLong()
-         print(currentTime)
          withFPScare {
 
             // --- フレームごとの処理
