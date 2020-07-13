@@ -1,4 +1,4 @@
-package game.score
+package game.sheet
 
 import game.system.JudgeSettings
 import kotlin.math.abs

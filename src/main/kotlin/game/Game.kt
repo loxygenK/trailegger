@@ -1,8 +1,8 @@
 package game
 
 import game.drawable.Keyboard
-import game.point.Point
-import game.score.ScoreParser
+import game.score.Score
+import game.sheet.SheetMusicParser
 import game.screen.Drawable
 import game.screen.Screen
 import java.awt.*
@@ -31,8 +31,8 @@ class Game : KeyAdapter() {
       }
    }
 
-   private val score = ScoreParser.parse()
-   private val point = Point()
+   private val score = SheetMusicParser.parse()
+   private val point = Score()
 
    private var currentTime = 0L
 
