@@ -27,7 +27,6 @@ object SheetMusicParser {
       var offset = 0.0f
       var soundFileName = ""
 
-      var timePerNote = 0f
       var timePerBar = 0f
 
       val notes = mutableListOf<Note>()
@@ -70,8 +69,7 @@ object SheetMusicParser {
                }
                "bpm" -> {
                   bpm = value.toFloatOrNull() ?: throw InvalidSheetMusicException(index, line, "BPM must be number!")
-                  timePerNote = 60 / bpm * 1000
-                  timePerBar = timePerNote * 4
+                  timePerBar = 60 / bpm * 1000 * 4
                }
             }
             continue
@@ -82,6 +80,7 @@ object SheetMusicParser {
             val bars = line.split("|")
             val parsedNotes = bars.map { barContent ->
                barCount++
+               val timePerNote = 60 / bpm / (barContent.length / 4) * 1000
                barContent.mapIndexed { idx, c ->
                   Note(c, (offset + barCount * timePerBar + idx * timePerNote).toLong())
                }
