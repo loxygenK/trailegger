@@ -17,6 +17,8 @@ object SheetMusicParser {
       NOTES
    }
 
+   private val validChars = "1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./_ "
+
    // TODO: 実際にファイルから読み込ませる
    fun parse(sheetMusicFile: File): SheetMusic {
 
@@ -87,8 +89,9 @@ object SheetMusicParser {
                barCount++
                val timePerNote = 60 / bpm / (barContent.length / 4) * 1000
                barContent.mapIndexed { idx, c ->
-                  Note(c, (offset + barCount * timePerBar + idx * timePerNote).toLong())
-               }
+                  if(!validChars.contains(c.toLowerCase())) throw InvalidSheetMusicException(index, line, "Invalid character found! ($c)")
+                  if(c != ' ') Note(c.toLowerCase(), (offset + barCount * timePerBar + idx * timePerNote).toLong()) else null
+               }.filterNotNull()
             }.flatten()
 
             notes.addAll(parsedNotes)
