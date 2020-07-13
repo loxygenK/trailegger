@@ -13,7 +13,7 @@ class ScoreDrawer(
 ) : Drawable {
 
    override val drawRange: Rectangle =
-      Rectangle(0, 130, 0, 150).expandWidthOfScreen(30)
+      Rectangle(0, 100, 0, 150).expandWidthOfScreen(30)
    override val permanency: Boolean = false
 
    override fun draw(graphics: Graphics2D) {
