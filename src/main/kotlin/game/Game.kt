@@ -95,10 +95,12 @@ class Game(
 
    override fun keyPressed(e: KeyEvent?) {
 
-      val currentTime = sound.getCurrentPosition().toLong()
-
       Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
-      val judgeResult = sheetMusic.notes.getNearestNote(currentTime).judge(currentTime)
+
+      val currentTime = sound.getCurrentPosition().toLong()
+      val nearestNotes = sheetMusic.notes.getNearestNote(currentTime) ?: return
+
+      val judgeResult = nearestNotes.judge(currentTime)
 
       if(judgeResult.level == JudgeResultLevel.NotJudged) return
       previousJudgeResult = judgeResult

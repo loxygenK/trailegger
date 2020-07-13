@@ -1,6 +1,7 @@
 package game.sheet
 
 import java.io.File
+import kotlin.properties.Delegates
 
 object SheetMusicParser {
 
@@ -21,11 +22,11 @@ object SheetMusicParser {
 
       val lines = sheetMusicFile.readLines()
 
-      var name = ""
-      var author = ""
-      var bpm = 0.0f
-      var offset = 0.0f
-      var soundFileName = ""
+      var name: String? = null
+      var author: String? = null
+      var bpm: Float? = null
+      var offset = 0f
+      var soundFileName: String? = null
 
       var timePerBar = 0f
 
@@ -77,6 +78,10 @@ object SheetMusicParser {
 
          if(parsing == Parsing.NOTES) {
 
+            if(name == null || author == null || soundFileName == null || bpm == null) {
+               throw InvalidSheetMusicException(index, line, "There is/are not initialized property(ies)!")
+            }
+
             val bars = line.split("|")
             val parsedNotes = bars.map { barContent ->
                barCount++
@@ -95,7 +100,9 @@ object SheetMusicParser {
 
       }
 
-      val musicFilePath = File(sheetMusicFile.parentFile, soundFileName)
+      if(notes.isEmpty()) throw InvalidSheetMusicException(0, "(General Error)", "No notes found!")
+
+      val musicFilePath = File(sheetMusicFile.parentFile, soundFileName!!)
       if(!musicFilePath.isFile) {
          throw InvalidSheetMusicException(0, "(Runtime Error)", "Music file not found!")
       }
@@ -103,7 +110,7 @@ object SheetMusicParser {
       return SheetMusic(
          NotesGetter(notes),
          musicFilePath.toPath(),
-         SongInfo(name, author, bpm)
+         SongInfo(name!!, author!!, bpm!!)
       )
    }
 

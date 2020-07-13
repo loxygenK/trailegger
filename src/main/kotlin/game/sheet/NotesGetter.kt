@@ -11,10 +11,10 @@ class NotesGetter(
       return notes.filter { !it.judged && range.contains(it.timing) }
    }
 
-   fun getNearestNote(songTimestamp: Long): Note {
+   fun getNearestNote(songTimestamp: Long): Note? {
       return notes
          .filter {!it.judged}
-         .minBy { abs(it.timing - songTimestamp) } ?: error("No note was found. Maybe no notes in score?")
+         .minBy { abs(it.timing - songTimestamp) }
    }
 
    fun getLostNotes(songTimestamp: Long): List<Note> {
