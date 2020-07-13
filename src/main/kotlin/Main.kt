@@ -2,10 +2,15 @@ import game.Game
 import game.sheet.SheetMusicParser
 import java.io.File
 
-fun main() {
+fun main(args: Array<String>) {
+
+   if(args.isEmpty()) {
+      println("Specify a music sheet!")
+      return
+   }
 
    val musicSheet = SheetMusicParser.parse(
-      File("test/kkiminochikara.tlm")
+      File(args[0])
    )
    Game(musicSheet).start()
 

@@ -14,6 +14,9 @@ class Sound(
    private lateinit var clip: Clip
    private var frameRate by Delegates.notNull<Float>()
 
+   val isPlaying
+      get() = clip.isRunning
+
    init {
       AudioSystem.getAudioInputStream(soundFilePath.toFile()).use { ais ->
          clip = AudioSystem.getLine(

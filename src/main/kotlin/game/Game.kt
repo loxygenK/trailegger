@@ -60,7 +60,7 @@ class Game(
       Screen.registerTask(sheetMusic.songInfo.createSongInfoDrawer())
 
       sound.play()
-      while (true) {
+      while (sound.isPlaying) {
          val currentTime = sound.getCurrentPosition().toLong()
          withFPScare {
 
