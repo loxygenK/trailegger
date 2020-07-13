@@ -35,6 +35,8 @@ class Game(
 
       val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
 
+      println(sleepTime)
+
       if(sleepTime < 0) {
          println("[!] ${-sleepTime} ms over!")
          return
@@ -45,6 +47,8 @@ class Game(
    }
 
    fun start() {
+      sound.play()
+      while(!sound.isPlaying) { Thread.sleep(10) }
       Screen.show()
       Screen.addKeyListener(this)
 
@@ -63,7 +67,6 @@ class Game(
       Screen.registerTask(screenEraser)
       Screen.registerTask(sheetMusic.songInfo.createSongInfoDrawer())
 
-      sound.play()
       while (sound.isPlaying) {
          val currentTime = sound.getCurrentPosition().toLong()
          withFPScare {
@@ -112,6 +115,8 @@ class Game(
 
          }
       }
+
+      println("---------")
 
    }
 

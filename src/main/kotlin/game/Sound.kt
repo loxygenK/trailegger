@@ -29,6 +29,8 @@ class Sound(
    fun play() {
       stop()
       clip.start()
+
+
    }
 
    private fun stop() {
