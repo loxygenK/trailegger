@@ -11,22 +11,28 @@ import java.awt.event.KeyEvent
 
 class Game : KeyAdapter() {
 
-   companion object {
-      private const val idealFPSWaitTime = (999 shl 16) / 60
-      private fun withFPScare(frameOperation: () -> Unit) {
+   private val score = SheetMusicParser.parse()
+   private val point = Score()
 
-         val startTime = System.currentTimeMillis() shl 16
-         frameOperation()
-         val endTime = System.currentTimeMillis() shl 16
+   private var currentTime = 0L
 
-         val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
+   private var previousJudgeResult: JudgeResult? = null
 
-         if(sleepTime < 0) {
-            println("[!] ${-sleepTime} ms over!")
-            return
-         }
+   private val idealFPSWaitTime = (999 shl 16) / 60
+   private fun withFPScare(frameOperation: () -> Unit) {
 
-         Thread.sleep(sleepTime)
+      val startTime = System.currentTimeMillis() shl 16
+      frameOperation()
+      val endTime = System.currentTimeMillis() shl 16
+
+      val sleepTime = (idealFPSWaitTime - (endTime - startTime)) shr 16
+
+      if(sleepTime < 0) {
+         println("[!] ${-sleepTime} ms over!")
+         return
+      }
+
+      Thread.sleep(sleepTime)
 
       }
    }
