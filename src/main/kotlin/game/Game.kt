@@ -1,6 +1,7 @@
 package game
 
 import game.drawable.Keyboard
+import game.point.Point
 import game.score.ScoreParser
 import game.screen.Drawable
 import game.screen.Screen
@@ -31,6 +32,7 @@ class Game : KeyAdapter() {
    }
 
    private val score = ScoreParser.parse()
+   private val point = Point()
 
    fun start() {
       Screen.show()
@@ -63,6 +65,8 @@ class Game : KeyAdapter() {
             score.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
                it.createJudgeBorder(currentTime)?.let { task -> Screen.registerTask(task) }
             }
+
+            Screen.registerTask(point.createPointDrawer())
 
             Screen.resolveTask()
 
