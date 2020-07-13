@@ -1,6 +1,5 @@
 package game
 
-import java.io.IOException
 import java.nio.file.Path
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.Clip
@@ -28,14 +27,11 @@ class Sound(
    }
 
    fun play() {
+      stop()
       clip.start()
    }
 
-   fun pause() {
-      clip.stop()
-   }
-
-   fun stop() {
+   private fun stop() {
       clip.stop()
       clip.flush()
       clip.framePosition = 0

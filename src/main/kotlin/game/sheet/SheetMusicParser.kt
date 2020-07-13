@@ -16,18 +16,19 @@ object SheetMusicParser {
       NOTES
    }
 
+   private const val validChars = "1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./_ "
+
    // TODO: 実際にファイルから読み込ませる
    fun parse(sheetMusicFile: File): SheetMusic {
 
       val lines = sheetMusicFile.readLines()
 
-      var name = ""
-      var author = ""
-      var bpm = 0.0f
-      var offset = 0.0f
-      var soundFileName = ""
+      var name: String? = null
+      var author: String? = null
+      var bpm: Float? = null
+      var offset = 0f
+      var soundFileName: String? = null
 
-      var timePerNote = 0f
       var timePerBar = 0f
 
       val notes = mutableListOf<Note>()
@@ -70,8 +71,7 @@ object SheetMusicParser {
                }
                "bpm" -> {
                   bpm = value.toFloatOrNull() ?: throw InvalidSheetMusicException(index, line, "BPM must be number!")
-                  timePerNote = 60 / bpm * 1000
-                  timePerBar = timePerNote * 4
+                  timePerBar = 60 / bpm * 1000 * 4
                }
             }
             continue
@@ -79,12 +79,18 @@ object SheetMusicParser {
 
          if(parsing == Parsing.NOTES) {
 
-            val bars = line.split("|")
+            if(name == null || author == null || soundFileName == null || bpm == null) {
+               throw InvalidSheetMusicException(index, line, "There is/are not initialized property(ies)!")
+            }
+
+            val bars = line.split("|").filter { it != "" }
             val parsedNotes = bars.map { barContent ->
                barCount++
+               val timePerNote = 60 / bpm / (barContent.length / 4.0) * 1000
                barContent.mapIndexed { idx, c ->
-                  Note(c, (offset + barCount * timePerBar + idx * timePerNote).toLong())
-               }
+                  if(!validChars.contains(c.toLowerCase())) throw InvalidSheetMusicException(index, line, "Invalid character found! ($c)")
+                  if(c != ' ') Note(c.toLowerCase(), (offset + barCount * timePerBar + idx * timePerNote).toLong()) else null
+               }.filterNotNull()
             }.flatten()
 
             notes.addAll(parsedNotes)
@@ -96,7 +102,9 @@ object SheetMusicParser {
 
       }
 
-      val musicFilePath = File(sheetMusicFile.parentFile, soundFileName)
+      if(notes.isEmpty()) throw InvalidSheetMusicException(0, "(General Error)", "No notes found!")
+
+      val musicFilePath = File(sheetMusicFile.parentFile, soundFileName!!)
       if(!musicFilePath.isFile) {
          throw InvalidSheetMusicException(0, "(Runtime Error)", "Music file not found!")
       }
@@ -104,7 +112,7 @@ object SheetMusicParser {
       return SheetMusic(
          NotesGetter(notes),
          musicFilePath.toPath(),
-         SongInfo(name, author, bpm)
+         SongInfo(name!!, author!!, bpm!!)
       )
    }
 

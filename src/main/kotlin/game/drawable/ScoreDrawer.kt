@@ -8,7 +8,7 @@ import java.awt.Graphics2D
 import java.awt.Rectangle
 
 class ScoreDrawer(
-   val point: Int,
+   private val point: Int,
    val chain: Int
 ) : Drawable {
 

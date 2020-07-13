@@ -15,7 +15,7 @@ object Screen {
 
    private val taskQueue = mutableListOf<Drawable>()
 
-   var DEBUG = false
+   private var DEBUG = false
 
    init {
 
@@ -49,7 +49,8 @@ object Screen {
 
       taskQueue.map {
          val range = it.drawRange
-         val image = windowImage.getSubimage(range.x, range.y, range.width + 1, range.height + 1)
+         val image = windowImage.getSubimage(
+            range.x, range.y, range.width + 1, range.height + 1)
 
          val partialGraphics: Graphics2D = image.createGraphics()
          partialGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
@@ -66,10 +67,6 @@ object Screen {
 
    fun Rectangle.expandWidthOfScreen(margin: Int = 0): Rectangle {
       return Rectangle(margin, this.y, WINDOW_SIZE.width - margin * 2, this.height)
-   }
-
-   fun Rectangle.expandHeightOfScreen(margin: Int = 0): Rectangle {
-      return Rectangle(this.x, 0, this.width, WINDOW_SIZE.height - margin)
    }
 
    fun Rectangle.toEdgeOfScreen(edge: ScreenEdge, margin: Int = 0): Rectangle {
