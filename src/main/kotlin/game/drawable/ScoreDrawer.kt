@@ -7,7 +7,7 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Rectangle
 
-class PointDrawer(
+class ScoreDrawer(
    val point: Int,
    val chain: Int
 ) : Drawable {

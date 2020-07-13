@@ -1,6 +1,6 @@
 package game.score
 
-import game.drawable.PointDrawer
+import game.drawable.ScoreDrawer
 import game.system.JudgeResultLevel
 import game.system.JudgeSettings
 
@@ -18,8 +18,8 @@ class Score {
       JudgeResultLevel.Perfection to 0
    )
 
-   fun createPointDrawer(): PointDrawer {
-      return PointDrawer(
+   fun createPointDrawer(): ScoreDrawer {
+      return ScoreDrawer(
          point, chain
       )
    }
