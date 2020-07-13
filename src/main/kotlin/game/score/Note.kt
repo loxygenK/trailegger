@@ -3,33 +3,52 @@ package game.score
 import game.drawable.Keyboard
 import game.drawable.NoteBorder
 import game.screen.Drawable
-import game.system.JudgeResult
-import game.utils.expand
+import game.system.JudgeResultLevel
+import game.system.JudgeSettings
 import game.utils.toGlobalLocation
-import java.awt.Graphics2D
 import java.awt.Rectangle
 import kotlin.math.abs
 
 class Note(
    char: Char,
-   val timestamp: Long
+   val timing: Long
 ) {
 
-   companion object {
-      private const val MAXIMUM_VISIBLE_TIME = 800.0f
-   }
+   private val MAXIMUM_VISIBLE_TIME = 800.0f
+
+   var judged = false
+      private set
 
    val baseRange: Rectangle = Keyboard.getKeyCap(char)!!.rectangle.toGlobalLocation(Keyboard.drawRange)
 
-   fun judge(currentTimestamp: Long): JudgeResult {
-      return JudgeResult.Perfection
+   fun judge(songTimestamp: Long): JudgeResultLevel {
+
+      if(judged) throw IllegalStateException("This note is already judged! Check class Score.")
+
+      val diffTime = timing - songTimestamp
+
+      // ジャッジ対象時間内にジャッジ処理が呼ばれているか
+      if(abs(diffTime) > JudgeSettings.JUDGE_TARGET_TIME) {
+         // まだタイミングに達していればNotJudged、もう過ぎてたらそれは終わりです
+         return if(diffTime > 0) {
+            JudgeResultLevel.NotJudged
+         } else {
+            judged = true
+            JudgeResultLevel.Unobserved
+         }
+      }
+
+      judged = true
+      return JudgeSettings.judgeBorder.entries.find { it.value.contains(diffTime) }?.key
+         ?: error("Invalid difftime($diffTime ms)! Maybe JUDGE_TARGET_TIME(${JudgeSettings.JUDGE_TARGET_TIME} ms) is invalid.")
+
    }
 
-   fun createJudgeBorder(currentTimestamp: Long): Drawable? {
-      if(abs(timestamp - currentTimestamp) > MAXIMUM_VISIBLE_TIME) return null
+   fun createJudgeBorder(songTimestamp: Long): Drawable? {
+      if(abs(timing - songTimestamp) > MAXIMUM_VISIBLE_TIME) return null
       return NoteBorder(
          baseRange,
-         (timestamp - currentTimestamp) / MAXIMUM_VISIBLE_TIME
+         (timing - songTimestamp) / MAXIMUM_VISIBLE_TIME
       )
    }
 

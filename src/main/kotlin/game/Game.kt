@@ -34,6 +34,8 @@ class Game : KeyAdapter() {
    private val score = ScoreParser.parse()
    private val point = Point()
 
+   private var currentTime = 0L
+
    fun start() {
       Screen.show()
       Screen.DEBUG = true
@@ -57,12 +59,16 @@ class Game : KeyAdapter() {
 
       val start = System.currentTimeMillis()
       while (true) {
-         val currentTime = System.currentTimeMillis() - start
+         currentTime = System.currentTimeMillis() - start
          withFPScare {
+
+            score.notes.getLostNotes(currentTime).map {
+               point.updatePoint(it.judge(currentTime))
+            }
 
             Screen.registerTask(Keyboard)
 
-            score.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
+            score.notes.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
                it.createJudgeBorder(currentTime)?.let { task -> Screen.registerTask(task) }
             }
 
@@ -76,7 +82,10 @@ class Game : KeyAdapter() {
    }
 
    override fun keyPressed(e: KeyEvent?) {
+
       Keyboard.getKeyCap(e!!.keyChar.toLowerCase())?.highlighting = true
+      point.updatePoint(score.notes.getNearestNote(currentTime).judge(currentTime))
+
    }
 
    override fun keyReleased(e: KeyEvent?) {
