@@ -15,7 +15,7 @@ class Note(
    val timing: Long
 ) {
 
-   private val MAXIMUM_VISIBLE_TIME = 500.0f
+   private val maximumVisibleTime = 500.0f
 
    var judged = false
       private set
@@ -49,10 +49,10 @@ class Note(
    }
 
    fun createJudgeBorder(songTimestamp: Long): Drawable? {
-      if(abs(timing - songTimestamp) > MAXIMUM_VISIBLE_TIME) return null
+      if(abs(timing - songTimestamp) > maximumVisibleTime) return null
       return NoteBorder(
          baseRange,
-         (timing - songTimestamp) / MAXIMUM_VISIBLE_TIME
+         (timing - songTimestamp) / maximumVisibleTime
       )
    }
 

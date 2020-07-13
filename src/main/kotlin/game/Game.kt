@@ -1,6 +1,6 @@
 package game
 
-import game.drawable.JudgeResultDrawer
+import game.drawable.JudgeResultDrawSetting
 import game.drawable.Keyboard
 import game.drawable.Line
 import game.judge.JudgeResult
@@ -68,8 +68,7 @@ class Game(
          val currentTime = sound.getCurrentPosition().toLong()
          withFPScare {
 
-            // --- フレームごとの処理
-
+            // 取り逃したノーツを処理する
             val lostNotes = sheetMusic.notes.getLostNotes(currentTime)
             if(lostNotes.isNotEmpty()) {
                unobservedSound.play()
@@ -80,10 +79,12 @@ class Game(
                }
             }
 
-            if(this.previousJudgeResult != null && (currentTime - this.previousJudgeResult!!.timing) < 800f ){
+            // ジャッジリザルトを描画する
+            if(this.previousJudgeResult != null && (currentTime - this.previousJudgeResult!!.timing) < JudgeResultDrawSetting.maximumVisibleTime ){
                Screen.registerTask(previousJudgeResult!!.createJudgeResultDrawer(currentTime))
             }
 
+            // となりのノーツとの線を描画する
             val neighborhoodNotes = sheetMusic.notes.getNearNotes(currentTime, 2)
             if(neighborhoodNotes.size == 2) {
                Screen.registerTask(
@@ -95,16 +96,18 @@ class Game(
                )
             }
 
-            // --- 描画処理
-
+            // キーボードを描画する
             Screen.registerTask(Keyboard)
 
+            // 描画対象になるノーツを描画する
             sheetMusic.notes.getNotesByTimeRange(currentTime.relativeRange(-1000, 3000)).forEach {
                it.createJudgeBorder(currentTime)?.let { task -> Screen.registerTask(task) }
             }
 
+            // 得点情報を描画する
             Screen.registerTask(point.createPointDrawer())
 
+            // 描画処理を開始する
             Screen.resolveTask()
 
          }

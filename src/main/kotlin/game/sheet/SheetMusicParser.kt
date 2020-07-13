@@ -1,7 +1,6 @@
 package game.sheet
 
 import java.io.File
-import kotlin.properties.Delegates
 
 object SheetMusicParser {
 
@@ -17,7 +16,7 @@ object SheetMusicParser {
       NOTES
    }
 
-   private val validChars = "1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./_ "
+   private const val validChars = "1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./_ "
 
    // TODO: 実際にファイルから読み込ませる
    fun parse(sheetMusicFile: File): SheetMusic {

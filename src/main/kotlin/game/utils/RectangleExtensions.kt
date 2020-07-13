@@ -17,10 +17,6 @@ fun Rectangle.expand(delta: Int): Rectangle {
 
 }
 
-fun Rectangle.shrink(delta: Int): Rectangle {
-   return this.expand(-delta)
-}
-
 fun Rectangle.toGlobalLocation(base: Rectangle) : Rectangle {
    return Rectangle(
       this.x + base.x,

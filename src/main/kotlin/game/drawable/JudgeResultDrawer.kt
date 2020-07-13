@@ -8,13 +8,15 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Rectangle
 
+object JudgeResultDrawSetting {
+   const val maximumVisibleTime = 800f
+}
+
 class JudgeResultDrawer(
    private val resultLevel: JudgeResultLevel,
    diffTime: Long
 ) : Drawable {
-   val MAXIMUM_VISIBLE_TIME = 800f
-
-   private val drawProgressRate: Float = diffTime.toFloat() / MAXIMUM_VISIBLE_TIME
+   private val drawProgressRate: Float = diffTime.toFloat() / JudgeResultDrawSetting.maximumVisibleTime
 
    override val drawRange: Rectangle = Rectangle(0, 250, 0, 200).expandWidthOfScreen()
    override val permanency: Boolean = false

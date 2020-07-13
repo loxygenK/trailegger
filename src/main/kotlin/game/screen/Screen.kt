@@ -15,7 +15,7 @@ object Screen {
 
    private val taskQueue = mutableListOf<Drawable>()
 
-   var DEBUG = false
+   private var DEBUG = false
 
    init {
 
@@ -67,10 +67,6 @@ object Screen {
 
    fun Rectangle.expandWidthOfScreen(margin: Int = 0): Rectangle {
       return Rectangle(margin, this.y, WINDOW_SIZE.width - margin * 2, this.height)
-   }
-
-   fun Rectangle.expandHeightOfScreen(margin: Int = 0): Rectangle {
-      return Rectangle(this.x, 0, this.width, WINDOW_SIZE.height - margin)
    }
 
    fun Rectangle.toEdgeOfScreen(edge: ScreenEdge, margin: Int = 0): Rectangle {

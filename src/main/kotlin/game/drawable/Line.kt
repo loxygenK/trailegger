@@ -5,9 +5,9 @@ import game.screen.Screen
 import java.awt.*
 
 class Line(
-   val start: Point,
-   val end: Point,
-   val color: Color = Color.WHITE
+   private val start: Point,
+   private val end: Point,
+   private val color: Color = Color.WHITE
 ) : Drawable {
    override val drawRange: Rectangle = Rectangle(0, 0, Screen.WINDOW_SIZE.width, Screen.WINDOW_SIZE.height)
    override val permanency: Boolean = false
