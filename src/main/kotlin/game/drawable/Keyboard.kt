@@ -12,11 +12,11 @@ object Keyboard : Drawable {
       "1234567890-^\\", "qwertyuiop@[", "asdfghjkl;:]", "zxcvbnm,./\\"
    )
    private val keyCaps: List<KeyCap>
-   private const val keySize = 50
-   private const val keyMargin = 15
+   private const val keySize = 40
+   private const val keyMargin = 25
 
    override val drawRange =
-      Rectangle(0, (keySize + keyMargin) * 4).toEdgeOfScreen(ScreenEdge.DOWN).expandWidthOfScreen()
+      Rectangle(0, (keySize + keyMargin) * 4).toEdgeOfScreen(ScreenEdge.DOWN, 15).expandWidthOfScreen(15)
    override val permanency: Boolean = false
 
    init {

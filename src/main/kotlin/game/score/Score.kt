@@ -6,17 +6,8 @@ import game.judge.JudgeSettings
 
 class Score {
 
-   var point = 0
-      private set
-   var chain = 0
-      private set
-
-   val judgeResults = hashMapOf(
-      JudgeResultLevel.Unobserved to 0,
-      JudgeResultLevel.FastBad to 0,
-      JudgeResultLevel.FastGood to 0,
-      JudgeResultLevel.Perfection to 0
-   )
+   private var point = 0
+   private var chain = 0
 
    fun createPointDrawer(): ScoreDrawer {
       return ScoreDrawer(
@@ -26,12 +17,7 @@ class Score {
 
    fun updatePoint(judgeResultLevel: JudgeResultLevel) {
 
-      if(judgeResultLevel == JudgeResultLevel.NotJudged) {
-         println("Event was dispatched, but wasn't judged. Maybe too far to judge.")
-         return
-      }
-      println("Judged! result was $judgeResultLevel.")
-
+      if(judgeResultLevel == JudgeResultLevel.NotJudged) return
       point += JudgeSettings.points[judgeResultLevel]!!
 
       if(judgeResultLevel == JudgeResultLevel.Unobserved) {
